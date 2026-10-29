@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id        Int       @id @default(autoincrement())
+  roomCode  String    @unique
+  roomName  String
+  capacity  Int
+  location  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
+
+  @@map("Room")
+}
+
+model Booking {
+  id            Int      @id @default(autoincrement())
+  bookerName    String
+  purpose       String
+  startTime     DateTime
+  endTime       DateTime
+  attendeeCount Int
+  roomId        Int
+  room          Room     @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("Booking")
+}
